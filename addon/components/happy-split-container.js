@@ -5,6 +5,7 @@ export default Ember.Component.extend({
   isDragging: false,
   isVertical: true,
   splitterWidth: 6,
+  visibleCount: 0,
 
   _splitLine: undefined,
   _leading: undefined,
@@ -111,6 +112,7 @@ export default Ember.Component.extend({
       else if (this._trailing === undefined) {
         this._trailing = view;
       }
+      this.incrementProperty('visibleCount');
     },
 
     removeView: function (view) {
@@ -120,6 +122,15 @@ export default Ember.Component.extend({
       else if (this._trailing === view) {
         this._trailing = undefined;
       }
+      this.decrementProperty('visibleCount');
+    },
+
+    hideView: function(){
+      this.decrementProperty('visibleCount');
+    },
+
+    showView: function(){
+      this.incrementProperty('visibleCount');
     }
   }
 });

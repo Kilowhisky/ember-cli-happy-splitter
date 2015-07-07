@@ -20,7 +20,8 @@ Via Ember CLI:
 * `splitterWidth` - the width of the splitter in pixels; set on the `happy-split-container`
 * `splitPercentage` - the percentage of each `happy-split-view`; you are responsible for ensuring they total 100
 * `minimumPercentage` - the minimum `splitPercentage` of each `happy-split-view`; defaults to 10%
-
+* `isVisible` - boolean flag that hides or shows a `happy-split-view`. Should be applied to the `happy-splitter-bar` at the same time.
+ 
 ### CSS rules
 
 Override the following CSS rules to customize the appearance of this component:
