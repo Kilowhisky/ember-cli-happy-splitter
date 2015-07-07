@@ -6,13 +6,15 @@ export default Ember.Component.extend({
   isVertical: true,
   splitterWidth: 6,
   visibleCount: 0,
+  leadingHidden: false,
+  trailingHidden: false,
 
   _splitLine: undefined,
   _leading: undefined,
   _trailing: undefined,
 
   classNames: ['happy-split-container'],
-  classNameBindings: ['isVertical:vertical:horizontal', 'isResizing:dragging', 'isDragging:disable-select'],
+  classNameBindings: ['isVertical:vertical:horizontal', 'isResizing:dragging', 'isDragging:disable-select', 'leadingHidden:lead-hidden', 'trailingHidden:trail-hidden'],
 
   teardownSplitContainer: Ember.on('willDestroyElement', function () {
     this.set('isDragging', false);
@@ -125,11 +127,23 @@ export default Ember.Component.extend({
       this.decrementProperty('visibleCount');
     },
 
-    hideView: function(){
+    hideView: function(view){
+      if (this._leading === view){
+        this.set('leadingHidden', true);
+      }
+      else if (this._trailing === view){
+        this.set('trailingHidden', true);
+      }
       this.decrementProperty('visibleCount');
     },
 
-    showView: function(){
+    showView: function(view){
+      if (this._leading === view){
+        this.set('leadingHidden', false);
+      }
+      else if (this._trailing === view){
+        this.set('trailingHidden', false);
+      }
       this.incrementProperty('visibleCount');
     }
   }
