@@ -4,7 +4,7 @@ export default Ember.Component.extend({
   splitContainer: null,
   isVertical: Ember.computed.readOnly('splitContainer.isVertical'),
   splitterWidth: Ember.computed.readOnly('splitContainer.splitterWidth'),
-  siblingsVisible: Ember.computed.and('splitContainer.leadingVisible', 'splitContainer.trailingVisible'),
+  siblingsVisible: Ember.computed.and('splitContainer.leading', 'splitContainer.trailing'),
 
   minimumPercentage: 10,
 
@@ -14,7 +14,7 @@ export default Ember.Component.extend({
   _percentage: undefined,
   splitPercentage: Ember.computed('minimumPercentage', {
     get: function () {
-      return this._percentage === undefined ? 50 : this._percentage;
+      return this._percentage || 50;
     },
     set: function (key, value) {
       this._percentage = Math.max(this.get('minimumPercentage'), value);
@@ -22,21 +22,13 @@ export default Ember.Component.extend({
     }
   }),
 
-  initSplitView: Ember.on('init', function(){
-    this.get('splitContainer').send('addView', this, this.get('isVisible'));
-  }),
-
   setupSplitView: Ember.on('didInsertElement', function () {
-    this.updateDimensions();
     this.get('splitContainer').send('addView', this);
+    this.updateDimensions();
   }),
 
   teardownSplitView: Ember.on('willDestroyElement', function () {
     this.get('splitContainer').send('removeView', this);
-  }),
-
-  updateSplitVisible: Ember.observer('isVisible', function(){
-    this.get('splitContainer').send(this.get('isVisible') ? 'showView' : 'hideView', this);
   }),
 
   updateDimensions: Ember.observer('splitPercentage', 'splitterWidth', 'isVertical','siblingsVisible', function () {

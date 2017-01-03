@@ -3,9 +3,10 @@
     <button {{action 'toggle' 'visible'}}>Toggle Right</button>
     {{lorem-ipsum length=5500}}
   {{/happy-split-view}}
-  {{~ happy-splitter-bar isVisible=visible splitContainer=sContainer ~}}
-  {{#happy-split-view isVisible=visible class="bgRed verticalScroll" splitContainer=sContainer}}
-    {{lorem-ipsum length=5500}}
-  {{/happy-split-view}}
+  {{#if visible}}
+    {{~ happy-splitter-bar splitContainer=sContainer ~}}
+    {{#happy-split-view class="bgRed verticalScroll" splitContainer=sContainer}}
+      {{lorem-ipsum length=5500}}
+    {{/happy-split-view}}
+  {{/if}}
 {{/happy-split-container}}
-

@@ -5,15 +5,13 @@ export default Ember.Component.extend({
   isDragging: false,
   isVertical: true,
   splitterWidth: 6,
-  leadingVisible: true,
-  trailingVisible: true,
 
   _splitLine: undefined,
-  _leading: undefined,
-  _trailing: undefined,
+  leading: undefined,
+  trailing: undefined,
 
   classNames: ['happy-split-container'],
-  classNameBindings: ['isVertical:vertical:horizontal', 'isResizing:dragging', 'isDragging:disable-select', 'leadingVisible::lead-hidden', 'trailingVisible::trail-hidden'],
+  classNameBindings: ['isVertical:vertical:horizontal', 'isResizing:dragging', 'isDragging:disable-select'],
 
   teardownSplitContainer: Ember.on('willDestroyElement', function () {
     this.set('isDragging', false);
@@ -33,8 +31,8 @@ export default Ember.Component.extend({
 
     vertical = this.get('isVertical');
     splitLine = this._splitLine;
-    leading = this._leading;
-    trailing = this._trailing;
+    leading = this.get('leading');
+    trailing = this.get('trailing');
 
     // Compute the new percentage of the leading view.
     if (vertical) {
@@ -86,7 +84,7 @@ export default Ember.Component.extend({
     dragSplitter: function ($splitter) {
       var line;
 
-      if (Ember.isNone(this._leading) || Ember.isNone(this._trailing) || !($splitter instanceof jQuery)) {
+      if (Ember.isNone(this.get('leading')) || Ember.isNone(this.get('trailing')) || !($splitter instanceof jQuery)) {
         return;
       }
 
@@ -102,45 +100,29 @@ export default Ember.Component.extend({
       this.set('isDragging', true);
     },
 
-    addView: function (view, visible) {
+    addView: function(view) {
       if (view === undefined || view === null) {
         return;
       }
 
-      if (this._leading === undefined) {
-        this._leading = view;
-        this.set('leadingVisible', visible);
-      }
-      else if (this._trailing === undefined) {
-        this._trailing = view;
-        this.set('trailingVisible', visible);
-      }
-    },
-
-    removeView: function (view) {
-      if (this._leading === view) {
-        this._leading = undefined;
-      }
-      else if (this._trailing === view) {
-        this._trailing = undefined;
+      if (this.get('leading') === undefined) {
+        this.set('leading', view);
+        if (this.get('trailing')) {
+          view.set('splitPercentage', 100 - this.get('trailing.splitPercentage'));
+        }
+      } else if (this.get('trailing') === undefined) {
+        this.set('trailing', view);
+        if (this.get('leading')) {
+          view.set('splitPercentage', 100 - this.get('leading.splitPercentage'));
+        }
       }
     },
 
-    hideView: function(view){
-      if (this._leading === view){
-        this.set('leadingVisible', false);
-      }
-      else if (this._trailing === view){
-        this.set('trailingVisible', false);
-      }
-    },
-
-    showView: function(view){
-      if (this._leading === view){
-        this.set('leadingVisible', true);
-      }
-      else if (this._trailing === view){
-        this.set('trailingVisible', true);
+    removeView: function(view) {
+      if (this.get('leading') === view) {
+        this.set('leading', undefined);
+      } else if (this.get('trailing') === view) {
+        this.set('trailing', undefined);
       }
     }
   }
